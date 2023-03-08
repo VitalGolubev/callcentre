@@ -1,23 +1,18 @@
 package org.wh.callcentre;
 
-import java.util.LinkedList;
-import java.util.Random;
-
 public class Main {
 
-    public static void main(String[] args) {
-        Random rand = new Random();
-        LinkedList<Operator> operators = new LinkedList<>();
-        for (int i = 0; i < rand.nextInt(2, 5); i++) {
-            operators.add(new Operator("OP#" + (i + 1)));
-        }
-        CallCentre<Operator> callCentre = new CallCentre<>(operators);
+    public static void main(String[] args) throws InterruptedException {
+        CallCentre callCentre = new CallCentre(3);
 
-        int clientCount = rand.nextInt(3, 10);
-        System.out.println("CallCentre need to receive call from " + clientCount + " clients\n");
-        for (int i = 0; i < clientCount; i++) {
-            new Client(callCentre, "CL#" + (i + 1)).start();
+        for (int i = 1; i <= 30; i++) {
+            Client client = new Client(i, callCentre);
+            Thread clientThread = new Thread(client);
+            clientThread.start();
         }
+
+        Thread.sleep(10000);
+        callCentre.shutdown();
     }
 
 }
